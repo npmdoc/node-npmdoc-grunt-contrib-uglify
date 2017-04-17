@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/gruntjs/grunt-contrib-uglify#readme"
-
-    >grunt-contrib-uglify (v2.3.0)</a>
+    <a href="https://github.com/gruntjs/grunt-contrib-uglify#readme">grunt-contrib-uglify (v2.3.0)</a>
 </h1>
 <h4>Minify JavaScript files with UglifyJS</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.grunt-contrib-uglify">module grunt-contrib-uglify</a><ol>
 
@@ -109,29 +102,29 @@
     <ul>
     <li>description and source-code<pre class="apidocCodePre">grunt-contrib-uglify = function (grunt) {
   // Internal lib.
-  var uglify = require(&#x27;./lib/uglify&#x27;).init(grunt);
+  var uglify = require('./lib/uglify').init(grunt);
 
   var getAvailableFiles = function (filesArray) {
     return filesArray.filter(function (filepath) {
       if (!grunt.file.exists(filepath)) {
-        grunt.log.warn(&#x27;Source file &#x27; + chalk.cyan(filepath) + &#x27; not found&#x27;);
+        grunt.log.warn('Source file ' + chalk.cyan(filepath) + ' not found');
         return false;
       }
       return true;
     });
   };
 
-  grunt.registerMultiTask(&#x27;uglify&#x27;, &#x27;Minify files with UglifyJS.&#x27;, function() {
+  grunt.registerMultiTask('uglify', 'Minify files with UglifyJS.', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      banner: &#x27;&#x27;,
-      footer: &#x27;&#x27;,
+      banner: '',
+      footer: '',
       compress: {
         warnings: false
       },
       mangle: {},
       beautify: false,
-      report: &#x27;min&#x27;,
+      report: 'min',
       expression: false,
       maxLineLen: 32000,
       ASCIIOnly: false,
@@ -155,26 +148,26 @@
       var availableFiles = getAvailableFiles(f.src);
 
       if (availableFiles.length === 0) {
-        grunt.log.warn(&#x27;Destination &#x27; + chalk.cyan(f.dest) + &#x27; not written because src files were empty.&#x27;);
+        grunt.log.warn('Destination ' + chalk.cyan(f.dest) + ' not written because src files were empty.');
         return;
       }
 
       // Warn on incompatible options
-      if (options.expression &#x26;&#x26; (options.compress || options.mangle)) {
-        grunt.log.warn(&#x27;Option &#x27; + chalk.cyan(&#x27;expression&#x27;) + &#x27; not compatible with &#x27; + chalk.cyan(&#x27;compress and mangle&#x27;));
+      if (options.expression &amp;&amp; (options.compress || options.mangle)) {
+        grunt.log.warn('Option ' + chalk.cyan('expression') + ' not compatible with ' + chalk.cyan('compress and mangle'));
         options.compress = false;
         options.mangle = false;
       }
 
       // function to get the name of the sourceMap
-      if (typeof options.sourceMapName === &#x27;function&#x27;) {
+      if (typeof options.sourceMapName === 'function') {
         mapNameGenerator = options.sourceMapName;
       }
 
       // function to get the name of the sourceMapIn file
-      if (typeof options.sourceMapIn === &#x27;function&#x27;) {
+      if (typeof options.sourceMapIn === 'function') {
         if (availableFiles.length !== 1) {
-          grunt.fail.warn(&#x27;Cannot generate `sourceMapIn` for multiple source files.&#x27;);
+          grunt.fail.warn('Cannot generate `sourceMapIn` for multiple source files.');
         }
         mapInNameGenerator = options.sourceMapIn;
       }
@@ -184,13 +177,13 @@
         try {
           options.generatedSourceMapName = mapNameGenerator(f.dest);
         } catch (e) {
-          err = new Error(&#x27;SourceMap failed.&#x27;);
+          err = new Error('SourceMap failed.');
           err.origError = e;
           grunt.fail.warn(err);
         }
       // If no name is passed append .map to the filename
       } else if (!options.sourceMapName) {
-        options.generatedSourceMapName = f.dest + &#x27;.map&#x27;;
+        options.generatedSourceMapName = f.dest + '.map';
       } else {
         options.generatedSourceMapName = options.sourceMapName;
       }
@@ -200,7 +193,7 @@
         try {
           options.sourceMapIn = mapInNameGenerator(availableFiles[0]);
         } catch (e) {
-          err = new Error(&#x27;SourceMapInName failed.&#x27;);
+          err = new Error('SourceMapInName failed.');
           err.origError = e;
           grunt.fail.warn(err);
         }
@@ -226,11 +219,11 @@
         result = uglify.minify(availableFiles, f.dest, options);
       } catch (e) {
         console.log(e);
-        err = new Error(&#x27;Uglification failed.&#x27;);
+        err = new Error('Uglification failed.');
         if (e.message) {
-          err.message += &#x27;\n&#x27; + e.message + &#x27;. \n&#x27;;
+          err.message += '\n' + e.message + '. \n';
           if (e.line) {
-            err.message += &#x27;Line &#x27; + e.line + &#x27; in &#x27; + availableFiles + &#x27;\n&#x27;;
+            err.message += 'Line ' + e.line + ' in ' + availableFiles + '\n';
           }
         }
         err.orig ...</pre></li>
@@ -279,3 +272,4 @@
     ]
 </div>
 </div>
+</body></html>
