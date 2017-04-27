@@ -1,6 +1,6 @@
 # npmdoc-grunt-contrib-uglify
 
-#### api documentation for  [grunt-contrib-uglify (v2.3.0)](https://github.com/gruntjs/grunt-contrib-uglify#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-grunt-contrib-uglify.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-grunt-contrib-uglify) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-grunt-contrib-uglify.svg)](https://travis-ci.org/npmdoc/node-npmdoc-grunt-contrib-uglify)
+#### basic api documentation for  [grunt-contrib-uglify (v2.3.0)](https://github.com/gruntjs/grunt-contrib-uglify#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-grunt-contrib-uglify.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-grunt-contrib-uglify) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-grunt-contrib-uglify.svg)](https://travis-ci.org/npmdoc/node-npmdoc-grunt-contrib-uglify)
 
 #### Minify JavaScript files with UglifyJS
 
@@ -108,7 +108,8 @@
     "scripts": {
         "test": "grunt test"
     },
-    "version": "2.3.0"
+    "version": "2.3.0",
+    "bin": {}
 }
 ```
 
