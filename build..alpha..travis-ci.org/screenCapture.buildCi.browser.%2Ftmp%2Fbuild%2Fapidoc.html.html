@@ -63,6 +63,25 @@
 
         </li>
 
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">grunt-contrib-uglify.</span>uglify</span>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.grunt-contrib-uglify.uglify">module grunt-contrib-uglify.uglify</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.grunt-contrib-uglify.uglify.init">
+            function <span class="apidocSignatureSpan">grunt-contrib-uglify.uglify.</span>init
+            <span class="apidocSignatureSpan">(grunt)</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
@@ -206,6 +225,172 @@
         }
         err.orig ...</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.grunt-contrib-uglify.uglify" id="apidoc.module.grunt-contrib-uglify.uglify">module grunt-contrib-uglify.uglify</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.grunt-contrib-uglify.uglify.init" id="apidoc.element.grunt-contrib-uglify.uglify.init">
+        function <span class="apidocSignatureSpan">grunt-contrib-uglify.uglify.</span>init
+        <span class="apidocSignatureSpan">(grunt)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">init = function (grunt) {
+  var exports = {};
+
+  // Minify with UglifyJS.
+  // From https://github.com/mishoo/UglifyJS2
+  // API docs at http://lisperator.net/uglifyjs/
+  exports.minify = function(files, dest, options) {
+    options = options || {};
+
+    grunt.verbose.write('Minifying with UglifyJS...');
+
+    var topLevel = null;
+    var totalCode = '';
+    var sourcesContent = {};
+
+    var outputOptions = getOutputOptions(options, dest);
+    var output = UglifyJS.OutputStream(outputOptions);
+
+    // Grab and parse all source files
+    files.forEach(function(file) {
+
+      var code = grunt.file.read(file);
+      totalCode += code;
+
+      // The src file name must be relative to the source map for things to work
+      var basename = path.basename(file);
+      var fileDir = path.dirname(file);
+      var sourceMapDir = path.dirname(options.generatedSourceMapName);
+      var relativePath = path.relative(sourceMapDir, fileDir);
+      var pathPrefix = relativePath ? relativePath + path.sep : '';
+      var bare_returns = options.bare_returns || undefined;
+
+      // Convert paths to use forward slashes for sourcemap use in the browser
+      file = uriPath(pathPrefix + basename);
+
+      sourcesContent[file] = code;
+      topLevel = UglifyJS.parse(code, {
+        filename: file,
+        toplevel: topLevel,
+        expression: options.expression,
+        bare_returns: bare_returns
+      });
+    });
+
+    // Wrap code in a common js wrapper.
+    if (options.wrap) {
+      topLevel = topLevel.wrap_commonjs(options.wrap, options.exportAll);
+    }
+
+    // Wrap code in closure with configurable arguments/parameters list.
+    if (options.enclose) {
+      var argParamList = Object.keys(options.enclose).map(function(key) {
+        return key + ':' + options.enclose[key];
+      });
+
+      topLevel = topLevel.wrap_enclose(argParamList);
+    }
+
+    var topLevelCache = null;
+    if (options.nameCache) {
+      topLevelCache = UglifyJS.readNameCache(options.nameCache, 'vars');
+    }
+
+    // Need to call this before we mangle or compress,
+    // and call after any compression or ast altering
+    if (options.expression === false) {
+      topLevel.figure_out_scope({
+        screw_ie8: options.screwIE8,
+        cache: topLevelCache
+      });
+    }
+
+    if (options.compress !== false) {
+      if (options.compress === true) {
+        options.compress = {};
+      }
+      if (options.compress.warnings !== true) {
+        options.compress.warnings = false;
+      }
+      if (options.screwIE8 === false) {
+        options.compress.screw_ie8 = false;
+      }
+      var compressor = UglifyJS.Compressor(options.compress);
+      topLevel = compressor.compress(topLevel);
+
+      // Need to figure out scope again after source being altered
+      if (options.expression === false) {
+        topLevel.figure_out_scope({
+          screw_ie8: options.screwIE8,
+          cache: topLevelCache
+        });
+      }
+    }
+
+    var mangleExclusions = {
+      vars: [],
+      props: []
+    };
+    if (options.reserveDOMProperties) {
+      mangleExclusions = UglifyJS.readDefaultReservedFile();
+    }
+
+    if (options.exceptionsFiles) {
+      try {
+        options.exceptionsFiles.forEach(function(filename) {
+          mangleExclusions = UglifyJS.readReservedFile(filename, mangleExclusions);
+        });
+      } catch (ex) {
+        grunt.warn(ex);
+      }
+    }
+
+    var cache = null;
+    if (options.nameCache) {
+      cache = UglifyJS.readNameCache(options.nameCache, 'props');
+    }
+
+    if (typeof options.mangleProperties !== 'undefined' &amp;&amp; options.mangleProperties !== false) {
+      // if options.mangleProperties is a boolean (true) convert it into an object
+      if (typeof options.mangleProperties !== 'object') {
+        options.mangleProperties = {};
+      }
+
+      options.mangleProperties.reserved = mangleExclusions ? mangleExclusions.props : null;
+      options.mangleProperties.cache = cache;
+
+      topLevel = UglifyJS.mangle_properties(topLevel, options.mangleProperties);
+
+      if (options.nameCache) {
+        UglifyJS.writeNameCache(options.nameCache, 'props', cache);
+      } ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// Converts \r\n to \n
+function normalizeLf(string) {
+return string.replace(/\r\n/g, '\n');
+}
+
+module.exports = function(grunt) {
+// Internal lib.
+var uglify = require('./lib/uglify').<span class="apidocCodeKeywordSpan">init</span>(grunt);
+
+var getAvailableFiles = function (filesArray) {
+  return filesArray.filter(function (filepath) {
+    if (!grunt.file.exists(filepath)) {
+      grunt.log.warn('Source file ' + chalk.cyan(filepath) + ' not found');
+      return false;
+    }
+...</pre></li>
     </ul>
 
 
